@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 import os
 import math 
-from util import seconds_to_timestring, seconds_to_timestring_hhmmss, get_now, get_last_sunday, print_formatted_json
+from util import seconds_to_timestring, seconds_to_timestring_hhmmss, get_now, get_last_sunday, print_formatted_json, get_day_of_week, format_date
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -20,7 +20,7 @@ def get_workspaces():
     # Return all workspace ids as an array of dicts  
     workspaces = []    
     print("Workspaces:")
-    print("----------------------")
+    print("--------------------------------------------------------------")
     for i in range(0, len(response_json)):
         name = response_json[i]['name']
         print(i+1, ": ", response_json[i]['name'])
@@ -28,7 +28,7 @@ def get_workspaces():
             'id': response_json[i]['id'],
             'name': name
         })
-    print("----------------------")
+    print("--------------------------------------------------------------")
     return workspaces
 
 def get_current_weekly_report(workspace):
@@ -52,6 +52,8 @@ def get_current_weekly_report(workspace):
     total_time = response_json["totals"][0]["totalTime"]
     time_string = seconds_to_timestring(total_time)
     time_string_hhmmss = seconds_to_timestring_hhmmss(total_time)
+    print(f"Weekly Report: (Sunday, {format_date(last_sunday)} -> {get_day_of_week()}, {format_date(current_date)})")
+    print("--------------------------------------------------------------")
     print("Total time: ", time_string)
     # print("Total time: (HH/MM/SS) = ", time_string_hhmmss)
     time_for_each_project = {}
@@ -68,13 +70,13 @@ def get_current_weekly_report(workspace):
         else:
             time_for_each_project[project][task] = time_for_each_project[project][task] + duration
 
-    print("-------------------------------")
+    print("--------------------------------------------------------------")
     for project in time_for_each_project:
         project_time = sum(time_for_each_project[project].values())
         print(project, ": ", seconds_to_timestring(project_time))
         for task, duration in time_for_each_project[project].items():
             print("         ", task, ":", seconds_to_timestring_hhmmss(duration))
-        print("-------------------------------")
+        print("--------------------------------------------------------------")
 
 
 workspaces = get_workspaces()
