@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import json
 from dotenv import load_dotenv
 import os
+import math 
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -54,7 +55,7 @@ def get_current_weekly_report(workspace):
     data={
         "dateRangeEnd": current_date, 
         "dateRangeStart": last_sunday,
-        "detailedFilter": {"page": 1, "pageSize": 50} 
+        "detailedFilter": {"page": 1, "pageSize": 1000} 
     }
 
     print(current_date)
@@ -64,16 +65,18 @@ def get_current_weekly_report(workspace):
     response = requests.post("https://reports.api.clockify.me/v1/workspaces/" + WORKSPACE_ID + "/reports/detailed", headers=headers, json=data)
     response_json = response.json()
     print_formatted_json(response_json)
-    print("Total time: ", response_json["totals"][0]["totalTime"])
-    count = 0
+    total_time = response_json["totals"][0]["totalTime"]
+    hours = math.floor(total_time / 60 / 60)
+    minutes = math.floor((total_time / 60) % 60)
+    seconds = math.floor(total_time % 60)
+    time_string = str(hours) + " hours, " + str(minutes) + " minutes " + str(seconds) + " seconds."
+    print("Total time: ", time_string)
     for i in range(0, len(response_json["timeentries"])):
         entry = response_json["timeentries"][i]
         duration = entry["timeInterval"]["duration"]
         project = entry['projectName']
         task = entry['taskName']
-        count = count + duration
         print("Entry ", i, ") ", duration, "| ", project, " | ", task, " |")
-    print(count)
 
 workspaces = get_workspaces()
 print(workspaces)
