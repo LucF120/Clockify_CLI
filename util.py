@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import math 
+import json 
 
 def get_last_sunday():
     # Get the current datetime
@@ -45,3 +46,7 @@ def seconds_to_timestring_hhmmss(seconds):
     if seconds < 10:
         seconds = "0" + str(seconds)
     return str(hours) + ":" + str(minutes) + ":" + str(seconds)
+
+def print_formatted_json(response_json):
+    json_formatted = json.dumps(response_json, indent=4)
+    print(json_formatted)
