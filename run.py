@@ -85,15 +85,31 @@ def get_current_weekly_report(workspace):
 def add_time_entry(workspace):
     URL = f"https://api.clockify.me/api/v1/workspaces/{workspace['id']}/time-entries"
     headers={"x-api-key": API_KEY}
-    print(get_now_utc())
     data={
         "start": get_now_utc(),
     }
     response = requests.post(URL, headers=headers, json=data)
-    print(response.json())
+    print("Time entry has started.")
+
+def is_entry_in_progress(workspace):
+    URL = f"https://api.clockify.me/api/v1/workspaces/{workspace['id']}/time-entries/status/in-progress"
+    headers={"x-api-key": API_KEY}
+    data={
+        "page": 1,
+        "page-size": 1000
+    }
+    response = requests.get(URL, headers=headers, json=data)
+    if(response.json()):
+        print("The following time entry is in progress:")
+        print(response.json())
+    else:
+        print("There are currently no time entries in progress")
 workspaces = get_workspaces()
 
 print("\n\n")
 
 get_current_weekly_report(workspaces[0])
-# add_time_entry(workspaces[0])
+is_entry_in_progress(workspaces[0])
+add_time_entry(workspaces[0])
+is_entry_in_progress(workspaces[0])
+
