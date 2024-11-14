@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import math 
 import json 
 
@@ -18,6 +18,9 @@ def get_last_sunday():
 
 def get_now():
     return datetime.now().isoformat()
+
+def get_now_utc():
+    return datetime.now(timezone.utc).isoformat(timespec='seconds')[0:19] + 'Z'
 
 def get_day_of_week():
     days_of_week = {
@@ -45,12 +48,6 @@ def seconds_to_timestring(seconds):
     hours = math.floor(seconds / 60 / 60)
     minutes = math.floor((seconds / 60) % 60)
     seconds = math.floor(seconds % 60)
-    if hours < 10:
-        hours = "0" + str(hours)
-    if minutes < 10:
-        minutes = "0" + str(minutes)
-    if seconds < 10:
-        seconds = "0" + str(seconds)
     return str(hours) + " hours, " + str(minutes) + " minutes " + str(seconds) + " seconds."
 
 # Takes in seconds, and outputs the time in the following string format:

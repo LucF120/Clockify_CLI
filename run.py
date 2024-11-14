@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 import os
 import math 
-from util import seconds_to_timestring, seconds_to_timestring_hhmmss, get_now, get_last_sunday, print_formatted_json, get_day_of_week, format_date
+from util import *
 
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
@@ -46,7 +46,7 @@ def get_current_weekly_report(workspace):
         "detailedFilter": {"page": 1, "pageSize": 1000} 
     }
 
-    response = requests.post("https://reports.api.clockify.me/v1/workspaces/" + WORKSPACE_ID + "/reports/detailed", headers=headers, json=data)
+    response = requests.post(WEEKLY_REPORT_URL, headers=headers, json=data)
     response_json = response.json()
     # print_formatted_json(response_json)
     total_time = response_json["totals"][0]["totalTime"]
@@ -79,12 +79,21 @@ def get_current_weekly_report(workspace):
         project_time = sum(time_for_each_project[project].values())
         print(project, ": ", seconds_to_timestring(project_time))
         for task, duration in time_for_each_project[project].items():
-            print("         ", task, ":", seconds_to_timestring_hhmmss(duration))
+            print(f"    - {task}: {seconds_to_timestring_hhmmss(duration)}")
         print("--------------------------------------------------------------")
 
-
+def add_time_entry(workspace):
+    URL = f"https://api.clockify.me/api/v1/workspaces/{workspace['id']}/time-entries"
+    headers={"x-api-key": API_KEY}
+    print(get_now_utc())
+    data={
+        "start": get_now_utc(),
+    }
+    response = requests.post(URL, headers=headers, json=data)
+    print(response.json())
 workspaces = get_workspaces()
 
 print("\n\n")
 
 get_current_weekly_report(workspaces[0])
+# add_time_entry(workspaces[0])
