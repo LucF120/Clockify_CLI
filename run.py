@@ -60,8 +60,12 @@ def get_current_weekly_report(workspace):
     for i in range(0, len(response_json["timeentries"])):
         entry = response_json["timeentries"][i]
         duration = entry["timeInterval"]["duration"]
-        project = entry['projectName']
+        if 'projectName' in entry.keys():
+            project = entry['projectName'] 
+        else:
+            project = '(No Project)'
         task = entry['taskName']
+
         
         if project not in time_for_each_project.keys():
             time_for_each_project[project] = {}
