@@ -104,7 +104,9 @@ def get_current_weekly_report(workspace):
     print("--------------------------------------------------------------")
     print("Total time: ", time_string, "\n")
     for day in time_for_each_day.keys():
-        print(f"{get_day_of_week(day)}: {seconds_to_timestring(time_for_each_day[day])}")
+        # Print the time for that day only if the day has passed, or is the current day
+        if(day <= datetime.now().weekday() or day == 6):
+            print(f"{get_day_of_week(day)}: {seconds_to_timestring(time_for_each_day[day])}")
     print("--------------------------------------------------------------")
     for project in time_for_each_project:
         project_time = sum(time_for_each_project[project].values())
