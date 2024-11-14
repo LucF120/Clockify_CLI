@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import math 
 
 def get_last_sunday():
     # Get the current datetime
@@ -16,3 +17,31 @@ def get_last_sunday():
 
 def get_now():
     return datetime.now().isoformat()
+
+# Takes in seconds, and outputs the time in the following string format:
+# H Hours, M Minutes, S Seconds
+def seconds_to_timestring(seconds):
+    hours = math.floor(seconds / 60 / 60)
+    minutes = math.floor((seconds / 60) % 60)
+    seconds = math.floor(seconds % 60)
+    if hours < 10:
+        hours = "0" + str(hours)
+    if minutes < 10:
+        minutes = "0" + str(minutes)
+    if seconds < 10:
+        seconds = "0" + str(seconds)
+    return str(hours) + " hours, " + str(minutes) + " minutes " + str(seconds) + " seconds."
+
+# Takes in seconds, and outputs the time in the following string format:
+# HH:MM:SS
+def seconds_to_timestring_hhmmss(seconds):
+    hours = math.floor(seconds / 60 / 60)
+    minutes = math.floor((seconds / 60) % 60)
+    seconds = math.floor(seconds % 60)
+    if hours < 10:
+        hours = "0" + str(hours)
+    if minutes < 10:
+        minutes = "0" + str(minutes)
+    if seconds < 10:
+        seconds = "0" + str(seconds)
+    return str(hours) + ":" + str(minutes) + ":" + str(seconds)
