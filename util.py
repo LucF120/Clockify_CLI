@@ -22,7 +22,7 @@ def get_now():
 def get_now_utc():
     return datetime.now(timezone.utc).isoformat(timespec='seconds')[0:19] + 'Z'
 
-def get_day_of_week():
+def get_day_of_week(day=datetime.now().weekday()):
     days_of_week = {
         0: "Monday",
         1: "Tuesday",
@@ -32,7 +32,7 @@ def get_day_of_week():
         5: "Saturday",
         6: "Sunday",
     }
-    return days_of_week[datetime.now().weekday()]
+    return days_of_week[day]
 
 def format_date(date):
     year = date[0:4]
