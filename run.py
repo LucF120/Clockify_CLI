@@ -100,16 +100,29 @@ def is_entry_in_progress(workspace):
     }
     response = requests.get(URL, headers=headers, json=data)
     if(response.json()):
-        print("The following time entry is in progress:")
-        print(response.json())
+        return [response.json()[0]['id'], response.json()[0]['timeInterval']['start']]
     else:
         print("There are currently no time entries in progress")
+        return False
+
+def stop_running_time_entry(workspace):
+    entry_data = is_entry_in_progress(workspace)
+    if(entry_data):
+        URL = f"https://api.clockify.me/api/v1/workspaces/{workspace['id']}/time-entries/{entry_data[0]}"
+        headers={"x-api-key": API_KEY}
+        data={
+            "start": entry_data[1],
+            "end": get_now_utc()
+        }
+        response = requests.put(URL, headers=headers, json=data)
+        print("In progress time entry has been stopped")
 workspaces = get_workspaces()
 
 print("\n\n")
 
 get_current_weekly_report(workspaces[0])
-is_entry_in_progress(workspaces[0])
-add_time_entry(workspaces[0])
-is_entry_in_progress(workspaces[0])
+# is_entry_in_progress(workspaces[0])
+# add_time_entry(workspaces[0])
+# is_entry_in_progress(workspaces[0])
+stop_running_time_entry(workspaces[0])
 
